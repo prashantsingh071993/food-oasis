@@ -35,25 +35,25 @@ const search = async ({
   const sql = `
     select s.id, s.name, s.address_1, s.address_2, s.city, s.state, s.zip,
       s.phone, s.latitude, s.longitude, s.website,  s.notes,
-      (select array(select row_to_json(row) 
+      (select array(select row_to_json(row)
         from (
-          select day_of_week, open, close, week_of_month 
-          from stakeholder_schedule 
+          select day_of_week, open, close, week_of_month
+          from stakeholder_schedule
           where stakeholder_id = s.id
         ) row
       )) as hours,
-      (select array(select row_to_json(category_row) 
+      (select array(select row_to_json(category_row)
         from (
-          select c.id, c.name 
-          from category c 
-            join stakeholder_category sc on c.id = sc.category_id 
-          where sc.stakeholder_id = s.id 
+          select c.id, c.name
+          from category c
+            join stakeholder_category sc on c.id = sc.category_id
+          where sc.stakeholder_id = s.id
         ) category_row
       )) as categories,
-      to_char(s.created_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as created_date, s.created_login_id, 
+      to_char(s.created_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as created_date, s.created_login_id,
       to_char(s.modified_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as modified_date, s.modified_login_id,
       to_char(s.verified_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as verified_date, s.verified_login_id,
-      to_char(s.approved_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as approved_date, 
+      to_char(s.approved_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as approved_date,
       to_char(s.rejected_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as rejected_date, s.reviewed_login_id,
       to_char(s.assigned_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS')as assigned_date, s.assigned_login_id,
       to_char(s.created_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as claimed_date, s.claimed_login_id,
@@ -82,7 +82,7 @@ const search = async ({
     left join login L4 on s.reviewed_login_id = L4.id
     left join login L5 on s.assigned_login_id = L5.id
     left join login L6 on s.claimed_login_id = L6.id
-    where s.name ilike ${nameClause} 
+    where s.name ilike ${nameClause}
     ${
       categoryIds && categoryIds.length > 0
         ? ` and s.id in ${categoryClause} `
@@ -199,28 +199,28 @@ const search = async ({
 };
 
 const selectById = async (id) => {
-  const sql = `select 
+  const sql = `select
       s.id, s.name, s.address_1, s.address_2, s.city, s.state, s.zip,
       s.phone, s.latitude, s.longitude, s.website,  s.notes,
-      (select array(select row_to_json(row) 
+      (select array(select row_to_json(row)
       from (
-        select day_of_week as "dayOfWeek", open, close, week_of_month as "weekOfMonth" 
-        from stakeholder_schedule 
+        select day_of_week as "dayOfWeek", open, close, week_of_month as "weekOfMonth"
+        from stakeholder_schedule
         where stakeholder_id = s.id
       ) row
       )) as hours,
-      (select array(select row_to_json(category_row) 
+      (select array(select row_to_json(category_row)
         from (
-          select c.id, c.name 
+          select c.id, c.name
           from category c
-            join stakeholder_category sc on c.id = sc.category_id 
-          where sc.stakeholder_id = s.id 
+            join stakeholder_category sc on c.id = sc.category_id
+          where sc.stakeholder_id = s.id
         ) category_row
       )) as categories,
-      to_char(s.created_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as created_date, s.created_login_id, 
+      to_char(s.created_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as created_date, s.created_login_id,
       to_char(s.modified_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as modified_date, s.modified_login_id,
       to_char(s.verified_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as verified_date, s.verified_login_id,
-      to_char(s.approved_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as approved_date, 
+      to_char(s.approved_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as approved_date,
       to_char(s.rejected_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as rejected_date, s.reviewed_login_id,
       to_char(s.assigned_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS')as assigned_date, s.assigned_login_id,
       to_char(s.created_date at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS') as claimed_date, s.claimed_login_id,
@@ -242,7 +242,7 @@ const selectById = async (id) => {
       s.donation_accept_perishable, s.donation_schedule,
       s.donation_delivery_instructions, s.donation_notes, s.covid_notes,
       s.category_notes, s.eligibility_notes, s.food_types, s.languages
-    from stakeholder s 
+    from stakeholder s
     left join login L1 on s.created_login_id = L1.id
     left join login L2 on s.modified_login_id = L2.id
     left join login L3 on s.verified_login_id = L3.id
@@ -387,10 +387,10 @@ const insert = async (model) => {
     languages,
   } = model;
   try {
-    const sql = `insert into stakeholder 
-    (name, address_1, address_2, 
-      city, state, zip, 
-      phone, latitude, longitude, 
+    const sql = `insert into stakeholder
+    (name, address_1, address_2,
+      city, state, zip,
+      phone, latitude, longitude,
       website, inactive, notes, requirements, admin_notes, created_login_id,
       parent_organization, physical_access, email,
       items, services, facebook, twitter, pinterest, linkedin, description,
@@ -403,13 +403,13 @@ const insert = async (model) => {
       donation_accept_frozen, donation_accept_refrigerated,
       donation_accept_perishable, donation_schedule,
       donation_delivery_instructions, donation_notes, covid_notes,
-      category_notes, eligiblity_notes, food_types, languages) 
+      category_notes, eligibility_notes, food_types, languages)
     values (
-      ${toSqlString(name)}, ${toSqlString(address1)}, ${toSqlString(address2)}, 
-      ${toSqlString(city)}, ${toSqlString(state)}, ${toSqlString(zip)}, 
-      ${toSqlString(phone)}, 
-      ${toSqlNumeric(latitude)}, ${toSqlNumeric(longitude)}, 
-      ${toSqlString(website)}, ${toSqlBoolean(inactive)}, 
+      ${toSqlString(name)}, ${toSqlString(address1)}, ${toSqlString(address2)},
+      ${toSqlString(city)}, ${toSqlString(state)}, ${toSqlString(zip)},
+      ${toSqlString(phone)},
+      ${toSqlNumeric(latitude)}, ${toSqlNumeric(longitude)},
+      ${toSqlString(website)}, ${toSqlBoolean(inactive)},
       ${toSqlString(notes)}, ${toSqlString(requirements)},
       ${toSqlString(adminNotes)}, ${toSqlNumeric(loginId)},
       ${toSqlString(parentOrganization)}, ${toSqlString(physicalAccess)},
@@ -418,22 +418,22 @@ const insert = async (model) => {
       ${toSqlString(twitter)}, ${toSqlString(pinterest)},
       ${toSqlString(linkedin)}, ${toSqlString(description)},
       ${toSqlTimestamp(verifiedDate)}, ${toSqlNumeric(verifiedLoginId)},
-      ${toSqlTimestamp(approvedDate)}, ${toSqlTimestamp(rejectedDate)}, 
+      ${toSqlTimestamp(approvedDate)}, ${toSqlTimestamp(rejectedDate)},
       ${toSqlNumeric(reviewedLoginId)},
       ${toSqlTimestamp(assignedDate)}, ${toSqlNumeric(assignedLoginId)},
       ${toSqlTimestamp(claimedDate)}, ${toSqlNumeric(claimedLoginId)},
-      ${toSqlString(reviewNotes)}, ${toSqlString(instagram)}, 
-      ${toSqlString(adminContactName)}, ${toSqlString(adminContactPhone)}, 
-      ${toSqlString(adminContactEmail)}, 
-      ${toSqlString(donationContactName)}, 
-      ${toSqlString(donationContactPhone)}, 
-      ${toSqlString(donationContactEmail)}, 
-      ${toSqlBoolean(donationPickup)}, 
-      ${toSqlBoolean(donationAcceptFrozen)}, 
-      ${toSqlBoolean(donationAcceptRefrigerated)}, 
-      ${toSqlBoolean(donationAcceptPerishable)}, 
-      ${toSqlString(donationSchedule)}, 
-      ${toSqlString(donationDeliveryInstructions)}, 
+      ${toSqlString(reviewNotes)}, ${toSqlString(instagram)},
+      ${toSqlString(adminContactName)}, ${toSqlString(adminContactPhone)},
+      ${toSqlString(adminContactEmail)},
+      ${toSqlString(donationContactName)},
+      ${toSqlString(donationContactPhone)},
+      ${toSqlString(donationContactEmail)},
+      ${toSqlBoolean(donationPickup)},
+      ${toSqlBoolean(donationAcceptFrozen)},
+      ${toSqlBoolean(donationAcceptRefrigerated)},
+      ${toSqlBoolean(donationAcceptPerishable)},
+      ${toSqlString(donationSchedule)},
+      ${toSqlString(donationDeliveryInstructions)},
       ${toSqlString(donationNotes)},
       ${toSqlString(covidNotes)},
       ${toSqlString(categoryNotes)},
@@ -447,8 +447,8 @@ const insert = async (model) => {
 
     for (let i = 0; i < selectedCategoryIds.length; i++) {
       const categoryId = selectedCategoryIds[i];
-      const sqlInsert = `insert into stakeholder_category 
-    (stakeholder_id, category_id) 
+      const sqlInsert = `insert into stakeholder_category
+    (stakeholder_id, category_id)
     values (${id}, ${categoryId})`;
       await pool.query(sqlInsert);
     }
@@ -461,8 +461,8 @@ const insert = async (model) => {
           .slice(0, -2)
       : null;
 
-    const hoursSqlInsert = `insert into stakeholder_schedule 
-      (stakeholder_id, day_of_week, open, close, week_of_month) 
+    const hoursSqlInsert = `insert into stakeholder_schedule
+      (stakeholder_id, day_of_week, open, close, week_of_month)
       values ${hoursSqlValues}`;
 
     if (hoursSqlValues) {
@@ -597,33 +597,50 @@ const update = async (model) => {
     languages,
   } = model;
 
-  const hoursSqlDelete = `delete from stakeholder_schedule where stakeholder_id = ${id}`;
-
   let hoursSqlValues = hours.length
     ? hours
         .reduce((acc, cur) => {
-          return (acc += `(${id}, '${cur.dayOfWeek}', '${cur.open}', '${cur.close}', ${cur.weekOfMonth}), `);
+          return (acc += `'(${cur.weekOfMonth},${cur.dayOfWeek},${cur.open},${cur.close})', `);
         }, "")
         .slice(0, -2)
-    : null;
+    : '';
+  categories = `ARRAY[` + selectedCategoryIds.join(",") + `]::int[]`;
+  formattedHours = `ARRAY[` + hoursSqlValues + `]::stakeholder_hours[]`;
 
-  const hoursSqlInsert = `insert into stakeholder_schedule 
-    (stakeholder_id, day_of_week, open, close, week_of_month) 
-    values ${hoursSqlValues}`;
+  // update_stakeholder_schedule_category is a postgres stored procedure. Source of this stored
+  // procedure is in the repo at db/stored_procs/update_stakeholder_schedule_category.sql.
+  //
+  // Here's an example invocation:
+  // CALL update_stakeholder_schedule_category(4437,                           --stakeholder.id
+  // ARRAY[3,5,7]::int[],                                                      --array of integer category_ids
+  // (ARRAY['(2,Wed,13:02,13:04)', '(3,Thu,07:00,08:00)'])::stakeholder_hours[]); --array of stakeholder_hours
+  // objects, which are defined as a postgres type (see repo file for more detail on this type).
+  //
+  // Currently, it updates stakeholder category and schedule by deleting the existing category/schedule rows,
+  // and creating new ones.
+  const invokeSprocSql = `CALL update_stakeholder_schedule_category(${id}, ${categories}, ${formattedHours})`;
+console.log(invokeSprocSql);
+  try {
+    await pool.query(invokeSprocSql);
+  } catch(e) {
+    console.error(e);
+    // If this fails we probably shouldn't update anything
+    return;
+  }
 
   const sql = `
     update stakeholder set
-      name = ${toSqlString(name)}, 
-      address_1 = ${toSqlString(address1)}, 
-      address_2 = ${toSqlString(address2)}, 
-      city = ${toSqlString(city)}, 
-      state = ${toSqlString(state)}, 
-      zip = ${toSqlString(zip)}, 
-      phone = ${toSqlString(phone)}, 
-      latitude = ${toSqlNumeric(latitude)}, 
-      longitude = ${toSqlNumeric(longitude)}, 
-      website = ${toSqlString(website)}, 
-      inactive = ${toSqlBoolean(inactive)}, 
+      name = ${toSqlString(name)},
+      address_1 = ${toSqlString(address1)},
+      address_2 = ${toSqlString(address2)},
+      city = ${toSqlString(city)},
+      state = ${toSqlString(state)},
+      zip = ${toSqlString(zip)},
+      phone = ${toSqlString(phone)},
+      latitude = ${toSqlNumeric(latitude)},
+      longitude = ${toSqlNumeric(longitude)},
+      website = ${toSqlString(website)},
+      inactive = ${toSqlBoolean(inactive)},
       notes = ${toSqlString(notes)},
       requirements = ${toSqlString(requirements)},
       admin_notes = ${toSqlString(adminNotes)},
@@ -639,33 +656,33 @@ const update = async (model) => {
       description = ${toSqlString(description)},
       modified_login_id = ${toSqlNumeric(loginId)},
       modified_date = CURRENT_TIMESTAMP,
-      verified_date = ${toSqlTimestamp(verifiedDate)}, 
+      verified_date = ${toSqlTimestamp(verifiedDate)},
       verified_login_id = ${toSqlNumeric(verifiedLoginId)},
-      approved_date = ${toSqlTimestamp(approvedDate)}, 
-      rejected_date = ${toSqlTimestamp(rejectedDate)}, 
+      approved_date = ${toSqlTimestamp(approvedDate)},
+      rejected_date = ${toSqlTimestamp(rejectedDate)},
       reviewed_login_id = ${toSqlNumeric(reviewedLoginId)},
-      assigned_date = ${toSqlTimestamp(assignedDate)}, 
+      assigned_date = ${toSqlTimestamp(assignedDate)},
       assigned_login_id = ${toSqlNumeric(assignedLoginId)},
-      claimed_date = ${toSqlTimestamp(claimedDate)}, 
+      claimed_date = ${toSqlTimestamp(claimedDate)},
       claimed_login_id = ${toSqlNumeric(claimedLoginId)},
-      review_notes = ${toSqlString(reviewNotes)}, 
-      instagram = ${toSqlString(instagram)}, 
-      admin_contact_name = ${toSqlString(adminContactName)}, 
-      admin_contact_phone = ${toSqlString(adminContactPhone)}, 
-      admin_contact_email = ${toSqlString(adminContactEmail)}, 
-      donation_contact_name = ${toSqlString(donationContactName)}, 
-      donation_contact_phone = ${toSqlString(donationContactPhone)}, 
-      donation_contact_email = ${toSqlString(donationContactEmail)}, 
-      donation_pickup = ${toSqlBoolean(donationPickup)}, 
-      donation_accept_frozen = ${toSqlBoolean(donationAcceptFrozen)}, 
+      review_notes = ${toSqlString(reviewNotes)},
+      instagram = ${toSqlString(instagram)},
+      admin_contact_name = ${toSqlString(adminContactName)},
+      admin_contact_phone = ${toSqlString(adminContactPhone)},
+      admin_contact_email = ${toSqlString(adminContactEmail)},
+      donation_contact_name = ${toSqlString(donationContactName)},
+      donation_contact_phone = ${toSqlString(donationContactPhone)},
+      donation_contact_email = ${toSqlString(donationContactEmail)},
+      donation_pickup = ${toSqlBoolean(donationPickup)},
+      donation_accept_frozen = ${toSqlBoolean(donationAcceptFrozen)},
       donation_accept_refrigerated = ${toSqlBoolean(
         donationAcceptRefrigerated
-      )}, 
-      donation_accept_perishable = ${toSqlBoolean(donationAcceptPerishable)}, 
-      donation_schedule = ${toSqlString(donationSchedule)}, 
+      )},
+      donation_accept_perishable = ${toSqlBoolean(donationAcceptPerishable)},
+      donation_schedule = ${toSqlString(donationSchedule)},
       donation_delivery_instructions = ${toSqlString(
         donationDeliveryInstructions
-      )}, 
+      )},
       donation_notes = ${toSqlString(donationNotes)},
       covid_notes = ${toSqlString(covidNotes)},
       category_notes = ${toSqlString(categoryNotes)},
@@ -673,33 +690,7 @@ const update = async (model) => {
       food_types = ${toSqlString(foodTypes)},
       languages = ${toSqlString(languages)}
     where id = ${id}`;
-  const result = await pool.query(sql);
-
-  const sqlDelete = `delete from stakeholder_category 
-    where stakeholder_id = ${id}`;
-  await pool.query(sqlDelete);
-
-  for (let i = 0; i < selectedCategoryIds.length; i++) {
-    const categoryId = selectedCategoryIds[i];
-    const sqlInsert = `insert into stakeholder_category 
-      (stakeholder_id, category_id) 
-      values (${id}, ${categoryId})`;
-    await pool.query(sqlInsert);
-  }
-
-  pool.query(hoursSqlDelete, (deleteErr, deleteRes) => {
-    if (deleteErr) {
-      console.log("sql delete error", deleteErr);
-    } else {
-      if (hoursSqlValues) {
-        pool.query(hoursSqlInsert, (insertErr, insertRes) => {
-          if (insertErr) {
-            console.log("sql insert error", insertErr);
-          }
-        });
-      }
-    }
-  });
+    const result = await pool.query(sql);
 };
 
 const remove = (id) => {
