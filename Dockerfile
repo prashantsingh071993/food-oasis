@@ -23,6 +23,7 @@ COPY app/ ./app
 COPY server.js ./
 COPY db/config.js ./db/
 COPY entrypoint.sh ./
+COPY migrations ./migrations
 
 # we dont want to run as sudo so create group and user
 RUN groupadd -r fola && useradd --no-log-init -r -g fola fola
